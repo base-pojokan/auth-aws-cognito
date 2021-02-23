@@ -1,0 +1,27 @@
+{
+  "name": "@base-pojokan/auth-aws-cognito",
+  "version": "1.0.0",
+  "description": "Package Authentication For AWS Cognito",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:base-pojokan/auth-aws-cognito.git",
+  "author": "JuniYadi <juniyadi94@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "release": "np patch --branch release --no-release-draft"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.850.0",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
+    "typescript": "^4.2.2"
+  }
+}
