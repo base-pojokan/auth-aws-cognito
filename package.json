@@ -1,6 +1,6 @@
 {
   "name": "@base-pojokan/auth-aws-cognito",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Package Authentication For AWS Cognito",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
