@@ -38,11 +38,24 @@ import { RequestAuthenticated, validateGroup } from '@base-pojokan/auth-aws-cogn
 export const index = async (req: RequestAuthenticated, res: Response, next: NextFunction) => {
     try {
         // validate group
-        const userDetail = validateGroup(req, 'venue');
+        const userDetail = await validateGroup(req, 'venue');
 
         return res.status(200).json(userDetail);
     } catch (e) {
         next(e);
     }
+}
+```
+
+- Result
+
+```json
+{
+    "email": "test@test.com",
+    "sub": "84a2242d-fb70-404d-b0ce-f57820e3d2b0",
+    "groups": [
+        "venue"
+    ],
+    "phone_number": "+62812341234"
 }
 ```
