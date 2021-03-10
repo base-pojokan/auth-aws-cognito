@@ -1,31 +1,66 @@
-import axios from 'axios';
-import * as dotenv from 'dotenv';
+import { Request } from 'express';
 
-// init dotenv
-dotenv.config();
+export interface ClaimsData {
+    [key: string]: string[] | string | null;
+}
 
-const cognitoIssuer : string = 'https://cognito-idp.{region}.amazonaws.com/{userPoolId}/.well-known/jwks.json';
-// const cognitoClaim : string = 'https://cognito-idp.us-east-1.amazonaws.com/<userpoolID>';
+export interface Claims {
+    claims: ClaimsData
+}
 
-/**
- * Get Public Keys Default
- */
-export const getPublicKeys = async () => {
-    try {
-        const request = await axios.get(cognitoIssuer);
-        const { data: response } = request;
+export interface RequestContext {
+    authorizer: Claims
+}
 
-        return response;
-    } catch (e) {
-        throw e;
-    }
+export interface RequestAuthenticated extends Request {
+    context: RequestContext
+}
+
+export interface UserDetail {
+    email: string,
+    sub: string,
+    groups: string[] | string | null,
+    phone_number: string | null,
 }
 
 /**
- * Validate AWS Cognito Token
+ * Validate AWS Cognito Group
  * 
- * @param token string
+ * @param req RequestAuthenticated
+ * @param group string
+ * @returns UserDetail
  */
-export const validate = (token: String) => {
-    return token;
+export const validateGroup = async (req: RequestAuthenticated, group: string) => {
+    
+    try {
+        // get context from request header
+        const { context } = req;
+
+        // get user group from cognito
+        const userGroup = context?.authorizer?.claims['cognito:groups'];
+
+        // throw error if group not found
+        if(!userGroup) {
+            throw new Error('the user does not have a group.!');
+        }
+
+        // validate group
+        if(!userGroup.includes(group)) {
+            throw new Error(`the user does not have a ${group} group`);
+        }
+
+        // get user detail
+        const userDetail : UserDetail = {
+            email: String(context?.authorizer?.claims['email']),
+            sub: String(context?.authorizer?.claims['sub']),
+            groups: context?.authorizer?.claims['cognito:groups'],
+            phone_number: String(context?.authorizer?.claims['phone_number'])
+        }
+
+        // return user group
+        return userDetail;
+    } catch (e) {
+        throw e;
+    }
+    
 }
