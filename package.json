@@ -18,6 +18,7 @@
     "prepublish": "tsc"
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
