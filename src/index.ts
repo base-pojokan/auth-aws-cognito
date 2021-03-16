@@ -59,6 +59,6 @@ export const validateGroup = async (req: RequestAuthenticated, group: string) =>
         // return user group
         return userDetail;
     } catch (e) {
-        return { code: 'error', message: e.message };
+        throw e;
     }
 }
