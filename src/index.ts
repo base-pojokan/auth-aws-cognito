@@ -49,16 +49,27 @@ export const validateGroup = async (req: RequestAuthenticated, group: string) =>
         }
 
         // get user detail
-        const userDetail : UserDetail = {
-            email: String(context?.authorizer?.claims['email']),
-            sub: String(context?.authorizer?.claims['sub']),
-            groups: context?.authorizer?.claims['cognito:groups'],
-            phone_number: String(context?.authorizer?.claims['phone_number'])
-        }
+        const user = userDetail(req);
 
         // return user group
-        return userDetail;
+        return user;
     } catch (e) {
         throw e;
     }
+}
+
+/**
+ * Get User Detail From Header
+ */
+export const userDetail = (req: RequestAuthenticated) => {
+    const { context } = req;
+
+    const data : UserDetail = {
+        email: String(context?.authorizer?.claims['email']),
+        sub: String(context?.authorizer?.claims['sub']),
+        groups: context?.authorizer?.claims['cognito:groups'],
+        phone_number: String(context?.authorizer?.claims['phone_number'])
+    }
+
+    return data;
 }
