@@ -31,7 +31,6 @@ export interface UserDetail {
  * @returns UserDetail
  */
 export const validateGroup = async (req: RequestAuthenticated, group: string) => {
-    
     try {
         // get context from request header
         const { context } = req;
@@ -60,7 +59,6 @@ export const validateGroup = async (req: RequestAuthenticated, group: string) =>
         // return user group
         return userDetail;
     } catch (e) {
-        throw e;
+        throw new Error(e.message);
     }
-    
 }
