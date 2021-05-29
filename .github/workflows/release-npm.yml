@@ -1,23 +1,28 @@
 name: Create and publish a package
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    # Setup .npmrc file to publish to GitHub Packages
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-        # Defaults to the user or organization that owns the workflow file
-        scope: '@base-pojokan'
-    - run: git config --global user.name "Github Actions"
-    - run: git config --global user.email "actions@users.noreply.github.com"
-    - run: yarn --frozen-lockfile
-    - run: yarn global add np
-    - run: yarn release
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12.x"
+          registry-url: "https://npm.pkg.github.com"
+          # Defaults to the user or organization that owns the workflow file
+          scope: "@base-pojokan"
+      - name: Update Git Config Name and Email
+        run: |
+          git config --global user.name "${{ secrets.GIT_DEPLOY_NAME }}"
+          git config --global user.email "${{ secrets.GIT_DEPLOY_EMAIL }}"
+      - name: Install Package
+        run: npm ci
+      - name: Install NP For Release Package
+        run: npm i -g np
+      - name: Publish Package by NP
+        run: npm run release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
