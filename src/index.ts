@@ -17,10 +17,14 @@ export interface RequestAuthenticated extends Request {
 }
 
 export interface UserDetail {
+    name: string,
     email: string,
+    email_verified: boolean,
     sub: string,
+    username: string,
     groups: string[] | string | null,
     phone_number: string | null,
+    picture: string | null,
 }
 
 /**
@@ -39,12 +43,12 @@ export const validateGroup = async (req: RequestAuthenticated, group: string) =>
         const userGroup = context?.authorizer?.claims['cognito:groups'];
 
         // throw error if group not found
-        if(!userGroup) {
+        if (!userGroup) {
             throw new Error('the user does not have a group.!');
         }
 
         // validate group
-        if(!userGroup.includes(group)) {
+        if (!userGroup.includes(group)) {
             throw new Error(`the user does not have a ${group} group`);
         }
 
@@ -64,11 +68,15 @@ export const validateGroup = async (req: RequestAuthenticated, group: string) =>
 export const userDetail = (req: RequestAuthenticated) => {
     const { context } = req;
 
-    const data : UserDetail = {
+    const data: UserDetail = {
+        name: String(context?.authorizer?.claims['name']),
         email: String(context?.authorizer?.claims['email']),
-        sub: String(context?.authorizer?.claims['sub']),
+        email_verified: Boolean(context?.authorizer?.claims['email_verified']),
+        sub: String(context?.authorizer?.claims['cognito:username']),
+        username: String(context?.authorizer?.claims['cognito:username']),
         groups: context?.authorizer?.claims['cognito:groups'],
-        phone_number: String(context?.authorizer?.claims['phone_number'])
+        phone_number: String(context?.authorizer?.claims['phone_number']),
+        picture: String(context?.authorizer?.claims['picture']),
     }
 
     return data;
